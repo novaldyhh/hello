@@ -2,7 +2,6 @@ import './style.css';
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
-// Setup
 var mixer
 var clock = new THREE.Clock()
 const scene = new THREE.Scene();
@@ -44,26 +43,24 @@ function addStar() {
 
 Array(3000).fill().forEach(addStar);
 
-var star
-
 function addStar2() {
   const geometry = new THREE.SphereGeometry(0.6, 10, 10);
   const material = new THREE.MeshStandardMaterial({ color: "#e847ae" });
-  star = new THREE.Mesh(geometry, material);
+  const star = new THREE.Mesh(geometry, material);
 
   const [x, y, z] = Array(100)
     .fill()
     .map(() => THREE.MathUtils.randFloatSpread(1000));
 
   star.position.set(x, y, z);
+  scene.add(star);
 }
-scene.add(star);
 
 Array(300).fill().forEach(addStar2);
 
 function addStar3() {
   const geometry = new THREE.SphereGeometry(0.5, 10, 10);
-  const material = new THREE.MeshStandardMaterial({ color: "#FF5733" });
+  const material = new THREE.MeshStandardMaterial({ color: "#FF2D00" });
   const star = new THREE.Mesh(geometry, material);
 
   const [x, y, z] = Array(100)
@@ -81,12 +78,12 @@ material.roughness = 0.6
 material.color = new THREE.Color('#898585');
 
 const moonTexture = new THREE.TextureLoader().load('moon.jpg');
-const normalTexture = new THREE.TextureLoader().load('normal.jpg');
 
 var hello1
 const loader = new GLTFLoader();
 loader.load('/3D/hello.glb', function (gltf) {
   hello1 = gltf.scene
+  hello1.mater
   scene.add(hello1)
   hello1.position.z = -5;
   hello1.position.setX(0);
@@ -96,7 +93,6 @@ const moon = new THREE.Mesh(
   new THREE.SphereGeometry(3, 50, 50),
   new THREE.MeshStandardMaterial({
     map: moonTexture,
-    normalMap: normalTexture,
   })
 );
 
@@ -105,13 +101,11 @@ scene.add(moon);
 moon.position.z = 50;
 moon.position.setX(0);
 
-
-// Scroll Animation
-
 function moveCamera() {
   const t = document.body.getBoundingClientRect().top;
 
   camera.position.z = t * -0.020;
+  camera.position.z += -0.001;
   camera.position.x = t * -0;
   camera.rotation.y = t * 0;
 }
@@ -119,11 +113,11 @@ function moveCamera() {
 document.body.onscroll = moveCamera;
 moveCamera();
 
-// Animation Loop
-
 function animate() {
   requestAnimationFrame(animate);
-  // controls.update();
+
+  moon.rotation.y += 0.02;
+
   var delta = clock.getDelta();
 
   if (mixer) mixer.update(delta);

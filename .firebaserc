@@ -1,5 +1,7 @@
 {
   "projects": {
-    "default": "novaldyhidayat"
+    "default": "novaldyhidayat",
+      "projectId": "novaldyhidayat"
+
   }
 }
