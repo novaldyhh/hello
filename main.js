@@ -41,6 +41,32 @@ function addStar() {
   scene.add(star);
 }
 
+const fontLoader = new THREE.FontLoader()
+var hello
+fontLoader.load('/3D/font.json', function (font) {
+  const geometrySetup = {
+    font: font,
+    size: 2,
+    height: 0.5,
+    curveSegments: 1,
+    bevelEnabled: true,
+    bevelThickness: 0.1,
+    bevelSize: 0.1,
+    bevelOffset: 0,
+    bevelSegments: 5
+  }
+  const helloText = new THREE.TextGeometry('HALO', geometrySetup);
+  const helloMat = new THREE.MeshLambertMaterial({ color: 0xce2121 })
+
+  hello = new THREE.Mesh(helloText, helloMat)
+
+  hello.position.set(-5, 0, -20)
+  scene.add(hello)
+
+  animate();
+
+})
+
 Array(3000).fill().forEach(addStar);
 
 function addStar2() {
@@ -77,47 +103,24 @@ material.metalness = 1
 material.roughness = 0.6
 material.color = new THREE.Color('#898585');
 
-const moonTexture = new THREE.TextureLoader().load('moon.jpg');
-
-var hello1
-const loader = new GLTFLoader();
-loader.load('/3D/hello.glb', function (gltf) {
-  hello1 = gltf.scene
-  hello1.mater
-  scene.add(hello1)
-  hello1.position.z = -5;
-  hello1.position.setX(0);
-});
-
-const moon = new THREE.Mesh(
-  new THREE.SphereGeometry(3, 50, 50),
-  new THREE.MeshStandardMaterial({
-    map: moonTexture,
-  })
-);
-
-scene.add(moon);
-
-moon.position.z = 50;
-moon.position.setX(0);
-
 function moveCamera() {
   const t = document.body.getBoundingClientRect().top;
 
-  camera.position.z = t * -0.020;
-  camera.position.z += -0.001;
-  camera.position.x = t * -0;
+  camera.position.z = t * -0.20;
+  console.log(camera.position.z)
+  if (camera.position.z >= 34) {
+    hello.position.z = -1000
+  } else if (camera.position.z <= 34) {
+    hello.position.z = -15
+  }
+  camera.position.x = t * 0;
   camera.rotation.y = t * 0;
 }
 
 document.body.onscroll = moveCamera;
 moveCamera();
 
-function animate() {
-  requestAnimationFrame(animate);
-
-  moon.rotation.y += 0.02;
-
+function render() {
   var delta = clock.getDelta();
 
   if (mixer) mixer.update(delta);
@@ -125,4 +128,10 @@ function animate() {
   renderer.render(scene, camera);
 }
 
-animate();
+
+function animate() {
+  requestAnimationFrame(animate);
+  hello.rotation.y += -0.00009
+  hello.rotation.x += 0.00009
+  render()
+}
